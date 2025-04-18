@@ -1,8 +1,7 @@
-import requests
-import json
+import os
 
 # Configuración
-BASE_URL = "https://api.github.com/repos/beekkles/TDA/contents/docs/guias"
+BASE_DIR = "../../../facultad/TDA/docs/guias"  # Ruta local donde se encuentran las guías
 ARCHIVO_SALIDA = "tda.html"
 CARPETAS = {
     "grafos": "Introducción a Grafos",
@@ -14,7 +13,7 @@ head_html = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TDA - Guías</title>
+    <title>TDA - Ejercicios</title>
     <style>
         body {
             font-family: 'Helvetica Neue', sans-serif;
@@ -31,15 +30,13 @@ head_html = """<!DOCTYPE html>
             margin-bottom: 2rem;
             color: #444;
         }
-        .guia {
+        .materia {
             margin: 1.5rem 0;
-            padding-left: 1rem;
-            border-left: 2px solid #3498db;
         }
-        .guia-titulo {
+        .materia-titulo {
             font-weight: 500;
             color: #2c3e50;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
         .item {
             margin: 0.3rem 0;
@@ -68,17 +65,14 @@ footer_html = """<a href="index.html" class="volver">← Volver a materias</a>
 </body>
 </html>"""
 
-# Función para obtener archivos de GitHub usando la API
-def obtener_archivos_github(carpeta):
-    url = f"{BASE_URL}/{carpeta}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return json.loads(response.text)
+def obtener_archivos_locales(carpeta):
+    dir_path = os.path.join(BASE_DIR, carpeta)
+    if os.path.exists(dir_path) and os.path.isdir(dir_path):
+        return os.listdir(dir_path)
     else:
-        print(f"No se pudo acceder a la carpeta: {carpeta}")
+        print(f"No se pudo acceder a la carpeta local: {carpeta}")
         return []
 
-# Función para generar el HTML
 def generar_html():
     partes = [head_html]
 
@@ -86,23 +80,25 @@ def generar_html():
         partes.append(f'<div class="materia">')
         partes.append(f'    <div class="materia-titulo">{titulo}</div>')
 
-        guias = obtener_archivos_github(carpeta)
-        for guia in guias:
-            if guia['type'] == 'dir':  # Si es una carpeta (guía)
-                ejercicios = obtener_archivos_github(f"{carpeta}/{guia['name']}")
-                if not ejercicios:
-                    continue
+        subcarpetas = obtener_archivos_locales(carpeta)
+        
+        subcarpetas = sorted([s for s in subcarpetas if s.isdigit() and "unfinished" not in s], key=int)
+        
+        for subcarpeta in subcarpetas:
+            subcarpeta_path = os.path.join(BASE_DIR, carpeta, subcarpeta)
+            
+            ejercicios = obtener_archivos_locales(os.path.join(carpeta, subcarpeta))
+            
+            ejercicios = [e for e in ejercicios if e.endswith('.html')]
+            
+            ejercicios = sorted(ejercicios, key=lambda e: int(e.replace('.html', '')))
 
-                partes.append(f'    <div class="guia">')
-                partes.append(f'        <div class="guia-titulo">Guía {guia["name"].zfill(2)}</div>')
-
-                for ejercicio in ejercicios:
-                    if ejercicio['name'].endswith('.html'):
-                        url = ejercicio['html_url']
-                        nombre = ejercicio['name'].replace('.html', '')
-                        partes.append(f'        <div class="item"><a href="{url}">Ejercicio {nombre}</a></div>')
-
-                partes.append(f'    </div>')
+            for ejercicio in ejercicios:
+                ejercicio_path = os.path.join(subcarpeta_path, ejercicio)
+                if os.path.isfile(ejercicio_path):
+                    url = f"https://beekkles.github.io/TDA/guias/{carpeta}/{subcarpeta}/{ejercicio}"
+                    nombre = ejercicio.replace('.html', '')
+                    partes.append(f'    <div class="item"><a href="{url}">Ejercicio {nombre}</a></div>')
 
         partes.append(f'</div>')
 
