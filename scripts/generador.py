@@ -5,7 +5,8 @@ BASE_DIR = "../../../facultad/TDA/docs/guias"  # Ruta local donde se encuentran 
 ARCHIVO_SALIDA = "tda.html"
 CARPETAS = {
     "grafos": "Introducción a Grafos",
-    "bt_pd_greedy": "Backtracking, Programación Dinámica y Greedy"
+    "bt_pd": "Backtracking, Programación Dinámica",
+    "greedy": "Greedy"
 }
 
 head_html = """<!DOCTYPE html>
