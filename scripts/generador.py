@@ -59,7 +59,7 @@ head_html = """<!DOCTYPE html>
     </style>
 </head>
 <body>
-    <h1>Algoritmos y Estructuras de Datos III</h1>
+    <h1>Técnicas de Diseño de Algoritmos</h1>
 """
 
 footer_html = """<a href="index.html" class="volver">← Volver a materias</a>
