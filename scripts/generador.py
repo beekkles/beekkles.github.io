@@ -6,7 +6,9 @@ ARCHIVO_SALIDA = "tda.html"
 CARPETAS = {
     "grafos": "Introducción a Grafos",
     "bt_pd": "Backtracking, Programación Dinámica",
-    "greedy": "Greedy"
+    "greedy": "Greedy",
+    "bfs-dijkstra-agm": "BFS, Dijkstra, AGM"
+
 }
 
 head_html = """<!DOCTYPE html>
