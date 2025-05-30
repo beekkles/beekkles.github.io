@@ -7,7 +7,9 @@ CARPETAS = {
     "grafos": "Introducción a Grafos",
     "bt_pd": "Backtracking, Programación Dinámica",
     "greedy": "Greedy",
-    "bfs-dijkstra-agm": "BFS, Dijkstra, AGM"
+    "bfs-dijkstra-agm": "BFS, Dijkstra, AGM",
+    "dyc": "Divide and Conquer",
+    "flujos": "Flujos"
 
 }
 
